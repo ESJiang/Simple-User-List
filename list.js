@@ -1,7 +1,7 @@
 const user_list = document.getElementById("user_list");
 
 function judgeContinue() {
-    let judge = prompt(`Are you sure you want to delete all users? Y/N`);
+    const judge = prompt(`Are you sure you want to delete all users? Y/N`);
     if (judge === null || !(judge.toLowerCase() === "y")) return false;
     return true;
 }
@@ -10,10 +10,8 @@ async function deleteSingle() {
     try {
         if (!judgeContinue()) return;
         const response = await axios.delete(`http://localhost:8080/api/clearsingle?id=${this.getAttribute("data-id")}`);
-        if (response.status === 201) {
-            alert("Delete successfully");
-            getUserList();
-        }
+        if (response.status === 201) alert("Delete successfully");
+        getUserList();
     } catch (err) {
         console.error(err);
     }
@@ -25,10 +23,7 @@ async function getUserList() {
         const response = await axios.get("http://localhost:8080/api/users");
         const users = response.data;
         console.log("users", users);
-        if (users.length === 0) {
-            alert("no users found, please add a new user");
-            return;
-        }
+        if (users.length === 0) return alert("no users found, please add a new user");
         for (value of users) {
             const li = document.createElement("li");
             li.innerHTML = `
@@ -45,10 +40,7 @@ async function getUserList() {
 
 async function addUser() {
     try {
-        if (document.getElementById("name").value === "" || document.getElementById("age").value === "") {
-            alert("please fill in all fields");
-            return;
-        }
+        if (document.getElementById("name").value === "" || document.getElementById("age").value === "") return alert("please fill in all fields");
         const body = {
             name: document.getElementById("name").value,
             age: document.getElementById("age").value,
@@ -58,8 +50,7 @@ async function addUser() {
         alert("user: " + users.name + " age: " + users.age + " has been added");
         getUserList();
         console.log("users", users);
-        document.getElementById("name").value = "";
-        document.getElementById("age").value = "";
+        document.querySelector(".user_form").reset();
     } catch (error) {
         console.error("Error fetching users:", error);
     }

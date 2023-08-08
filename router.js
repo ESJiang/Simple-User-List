@@ -10,7 +10,8 @@ let user = [
 
 router.get("/api/users", (req, res) => res.status(200).json(user));
 router.post("/api/user", (req, res) => {
-    user.push(req.body);
+    if (!req.body.name || !req.body.age) res.status(400).json("missing parameters");
+    user.push({ id: user.length + 1, ...req.body });
     res.status(201).json({
         msg: "add user successfully",
         data: req.body,
