@@ -1,4 +1,9 @@
-const user_list = document.getElementById("user_list");
+const user_list = document.getElementById("user_list"),
+    user_form = document.querySelector(".user_form");
+
+function clearUserList() {
+    user_list.textContent = "";
+}
 
 function judgeContinue() {
     const judge = prompt(`Are you sure you want to delete all users? Y/N`);
@@ -19,7 +24,7 @@ async function deleteSingle() {
 
 async function getUserList() {
     try {
-        user_list.textContent = "";
+        clearUserList();
         const response = await axios.get("http://localhost:8080/api/users");
         const users = response.data;
         console.log("users", users);
@@ -34,7 +39,7 @@ async function getUserList() {
         }
         user_list.querySelectorAll(".delete_btn").forEach(item => item.addEventListener("click", deleteSingle));
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching userlist:", error);
     }
 }
 
@@ -50,9 +55,9 @@ async function addUser() {
         alert("user: " + users.name + " age: " + users.age + " has been added");
         getUserList();
         console.log("users", users);
-        document.querySelector(".user_form").reset();
+        user_form.reset();
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error adding one user", error);
     }
 }
 
@@ -60,11 +65,10 @@ async function clear_list() {
     try {
         if (!judgeContinue()) return;
         const response = await axios.delete("http://localhost:8080/api/clear");
-        const user = response.data;
-        alert(user);
-        user_list.textContent = "";
+        alert(response.data);
+        clearUserList();
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error removing userlist", error);
     }
 }
 
